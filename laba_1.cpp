@@ -20,7 +20,6 @@ int main() {
     cout << setprecision (30) << s << endl;
     cout << "Calculation by standard functions: ";
     cout << setprecision (30) << log ((1 + x) / (1 - x));
-
     return 0;
 }
 
