@@ -18,7 +18,6 @@ int main(){
         cout << "Enter max number: ";
         cin >> x;
         for (int i = 0; i < n; i++)
-
             a[i] = (rand() % (x + 1)) * (int) pow(-1, rand() % 2);
         cout << "Array: ";
         for (int i = 0; i < n; i++)
