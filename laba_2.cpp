@@ -5,21 +5,43 @@ using namespace std;
 
 int main(){
     int n;
-    cout << "Enter the number of elements in the array\n";
+    cout << "Enter the number of elements in the array: ";
     cin >> n;
     double a[n];
-    cout << "Enter " << n << " elements: \n";
-    for (int i = 0; i < n; i++)
-        cin >> a[i];
+    int temp;
+    cout << "How do you want to enter numbers?\n";
+    cout << "    1 - random numbers\n    2 - I'll enter myself\n";
+    cout << "Enter (1 / 2): ";
+    cin >> temp;
+    if (temp == 1){
+        int x;
+        cout << "Enter max number: ";
+        cin >> x;
+        for (int i = 0; i < n; i++)
+
+            a[i] = (rand() % (x + 1)) * (int) pow(-1, rand() % 2);
+        cout << "Array: ";
+        for (int i = 0; i < n; i++)
+            cout << a[i] << " ";
+        cout << endl;
+
+    }
+    else
     {
-    double mn = abs(a[0]);
+        cout << "Enter " << n << " elements: \n";
+        for (int i = 0; i < n; i++)
+            cin >> a[i];
+    }
+    {
+    double mn = a[0];
+
     int num = 0;
     for (int i = 0; i < n; i++)
-        if (mn >= abs(a[i])){
-            mn = abs(a[i]);
+        if (abs(mn) >= abs(a[i])){
+            mn = a[i];
             num = i;
         }
-    cout << "Minimum element: " << mn << endl;
+    cout << "Minimum element (abs): " << mn << endl;
     cout << "Position: " << num << endl;
     }
 
@@ -40,7 +62,7 @@ int main(){
 
     {
     double p;
-    cout << "Enter p: \n";
+    cout << "Enter p: ";
     cin >> p;
     for (int i = 0; i < n; ) {
         if (a[i] == p) {
@@ -51,7 +73,7 @@ int main(){
         else
             i++;
     }
-    cout << "Array without" << p <<": ";
+    cout << "Array without " << p <<": ";
     for (auto c : a)
         cout << c << " ";
     }
