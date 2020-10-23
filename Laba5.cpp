@@ -70,9 +70,21 @@ int main() {
 		return 0;
 	}
 
-
-	for (auto c : p1)
+	if (ans == "yes") {
+		cout << "\none palindrome.txt: \n";
+	}
+	for (auto c : p1) {
 		one << c << "\n";
-	for (auto c : p0)
+		if (ans == "yes")
+			cout << c << " ";
+	}
+	if (ans == "yes") {
+		cout << endl;
+		cout << "\nzero palidromes.txt: \n";
+	}
+	for (auto c : p0) {
 		zero << c << "\n";
+		if (ans == "yes")
+			cout << c << " ";
+	}
 }
