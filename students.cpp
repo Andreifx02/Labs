@@ -1,10 +1,21 @@
 #include "students.h"
 
-double CalcMeanInGroup(vector<Student2> v, int group) {
+double CalcMeanInGroup(vector<Student2> v, int course, int group) {
 	int sum;
 	int cnt;
-	for(int i = 0; i < v.size(); i++)
-		if (v[i].getGroup() == group) {
+	for (int i = 0; i < v.size(); i++)
+		if (v[i].getGroup() == group && v[i].getCourse() == course) {
+			sum += v[i].CalcMean();
+			cnt++;
+		}
+	return sum / cnt;
+}
+
+double CalcMeanInGroup(vector<Student1> v, int course, int group) {
+	int sum;
+	int cnt;
+	for (int i = 0; i < v.size(); i++)
+		if (v[i].getGroup() == group && v[i].getCourse() == course) {
 			sum += v[i].CalcMean();
 			cnt++;
 		}

@@ -87,7 +87,7 @@ private:
 	vector<int> grade2;
 	Student2() {}
 };
-
-double CalcMeanInGroup(vector<Student2> v, int group);
+double CalcMeanInGroup(vector<Student1> v, int course, int group);
+double CalcMeanInGroup(vector<Student2> v, int course, int group);
 
 double CalcMeanForArray(vector<Student*> students);
