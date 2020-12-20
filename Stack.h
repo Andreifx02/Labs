@@ -1,152 +1,218 @@
 #pragma once
-
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
-
 template <typename T>
-struct Node {
-    T value;
-    int next;
-    Node();
-    Node(const int& value_, const int& next_);
-};
-
-template<typename T>
-Node<T>::Node() {
-    value = 0;
-    next = -1;
-}
-
-template<typename T>
-Node<T>::Node(const int &value_, const int &next_) {
-    value = value_;
-    next = next_;
-}
-
-
-template <typename T>
-class Stack{
+class Stack {
 private:
-    Node<T>* stack;
-    int n;
-    int b;
-    int bFree;
-    int size;
+    T* s;
+    int e = 0;
+    int n = 0;
+
+    void Extend();
+    void Swap(Stack<T>& r);
+
 public:
-    explicit Stack(const int& n_) {
-        n = n_;
-        stack = new Node<T>[n];
-        size = 0;
-        b = -1;
-        bFree = 0;
-        for (int i = 0; i < n; i++)
-            stack[i].next = i + 1;
-        stack[n - 1].next = -1;
+    Stack();
+    explicit Stack(const int& n_);
+    Stack(std::initializer_list<T> l);
+    Stack(const Stack<T>& st);
+    Stack(Stack<T>&& st) noexcept;
+
+    void Push(const T& value);
+    Stack<T>& operator<< (const T& value);
+
+    T Pop();
+    Stack<T>& operator>> (T& value);
+
+    Stack<T>& operator= (const Stack<T>& st);
+    Stack<T>& operator= (Stack<T>&& st) noexcept;
+
+    T& operator[] (size_t index);
+    const T& operator[] (size_t index) const;
+
+    std::vector<T> ToVector() const;
+
+    T& Top();
+    const T& Top() const;
+    bool isEmpty() const;
+
+    bool operator< (const Stack<T>& r) const;
+    bool operator>= (const Stack<T>& r) const;
+    bool operator> (const Stack<T>& r) const;
+    bool operator<= (const Stack<T>& r) const;
+    bool operator== (const Stack<T>& r) const;
+    bool operator!= (const Stack<T>& r) const;
+
+    friend std::ostream &operator<<(std::ostream &os, const Stack &stack) {
+        std::vector <T> a = stack.ToVector();
+        for (auto& i : a)
+            os << i << " ";
+        return os;
     }
 
-    void Extend() {
-        Node<T>* new_stack = new Node<T>[2 * n];
-        for (int i = 0; i < n; i++) {
-            new_stack[i] = stack[i];
-        }
-        delete[] stack;
-        stack = new_stack;
-        bFree = n;
-        for (int i = n; i < 2 * n; i++) {
-            stack[i].next = i + 1;
-        }
-        stack[2 * n - 1].next = -1;
-        n *= 2;
-    }
-
-    void Push(const T& value) {
-        int nextFree = stack[bFree].next;
-        stack[bFree].value = value;
-        stack[bFree].next = b;
-        b = bFree;
-        bFree = nextFree;
-        size++;
-        if (bFree == -1)
-            Extend();
-    }
-
-    T Pop() {
-        T del = stack[b].value;
-        int nextB = stack[b].next;
-        stack[b].next = bFree;
-        bFree = b;
-        b = nextB;
-        size--;
-        return del;
-    }
-
-    void Print() const {
-        int p = b;
-        while (p != -1) {
-            cout << stack[p].value << " ";
-            p = stack[p].next;
-        }
-        cout << endl;
-    }
-
-    void operator<< (const int& value) {
-        Push(value);
-    }
-
-    void operator>> (int& del) {
-        del = Pop();
-    }
-
-    void operator=(vector<T>& r){
-        for(int i = 0; i < n; i++){
-            stack[i].value = r[i];
-        }
-    }
-
-    T operator[] (const int& index) {
-        int p = b;
-        int idx = 0;
-        while (p != -1) {
-            if (idx == index)
-                break;
-            p = stack[p].next;
-            idx++;
-        }
-        return stack[p].value;
-    }
-
-    vector <T> ToVector() const {
-        vector <T> ans;
-        int p = b;
-        while (p != -1) {
-            ans.push_back(stack[p].value);
-            p = stack[p].next;
-        }
-        return ans;
-    }
-
-    bool operator== (const Stack<T>& r) {
-        return ToVector() == r.ToVector();
-    }
-
-    bool operator<(const Stack<T>& r){
-        if (ToVector() < r.ToVector()){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    bool operator>(const Stack<T>& r){
-        if (ToVector() > r.ToVector()){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
+    ~Stack();
 };
+
+template <typename T>
+void Stack<T>::Extend() {
+    T* new_s = new T[2 * n];
+    for (int i = 0; i < n; i++)
+        new_s[i] = s[i];
+    delete[] s;
+    s = new_s;
+    n *= 2;
+}
+
+template <typename T>
+void Stack<T>::Swap(Stack<T> &r) {
+    std::swap(r.s, s);
+    std::swap(r.n, n);
+    std::swap(r.e, e);
+}
+
+template <typename T>
+Stack<T>::Stack(const int& n_) : n(n_) {
+    s = new T[n];
+}
+
+template <typename T>
+Stack<T>::Stack() : Stack(10) {}
+
+template <typename T>
+Stack<T>::Stack(std::initializer_list<T> l) : Stack(l.size() + 1) {
+    for (const T& i : l)
+        Push(i);
+}
+
+template <typename T>
+Stack<T>::Stack(const Stack<T>& st) : Stack(st.n) {
+    e = st.e;
+    for (int i = 0; i < n; i++)
+        s[i] = st.s[i];
+}
+
+template <typename T>
+Stack<T>::Stack(Stack<T>&& st) noexcept {
+    s = st.s;
+    e = st.e;
+    n = st.n;
+    st.s = nullptr;
+    st.e = st.n = 0;
+}
+
+template <typename T>
+void Stack<T>::Push(const T& value) {
+    if (e == n)
+        Extend();
+    s[e++] = value;
+}
+
+template <typename T>
+Stack<T>& Stack<T>::operator<< (const T& value) {
+    Push(value);
+    return *this;
+}
+
+template <typename T>
+T Stack<T>::Pop() {
+    if (e == 0)
+        throw std::exception();
+    return s[--e];
+}
+
+template <typename T>
+Stack<T>& Stack<T>::operator>> (T& value) {
+    value = Pop();
+    return *this;
+}
+
+template <typename T>
+Stack<T> & Stack<T>::operator=(const Stack<T> &st) {
+    if (&st == this)
+        return *this;
+    Stack<T> t(st);
+    Swap(t);
+    return *this;
+}
+
+template <typename T>
+Stack<T>& Stack<T>::operator= (Stack<T>&& st) noexcept {
+    if (&st == this)
+        return *this;
+    Stack<T> t(move(st));
+    Swap(t);
+    return *this;
+}
+
+template <typename T>
+T& Stack<T>::operator[] (size_t index) {
+    if (index >= e)
+        throw std::exception();
+    return s[index];
+}
+
+template <typename T>
+const T& Stack<T>::operator[] (size_t index) const {
+    if (index >= e)
+        throw std::exception();
+    return s[index];
+}
+
+template <typename T>
+std::vector<T> Stack<T>::ToVector() const {
+    std::vector<T> v(e);
+    for (int i = 0; i < e; i++)
+        v[i] = s[i];
+    return v;
+}
+
+template <typename T>
+T& Stack<T>::Top() {
+    if (e == 0)
+        throw std::exception();
+    return s[e - 1];
+}
+
+template <typename T>
+const T& Stack<T>::Top() const {
+    if (e == 0)
+        throw std::exception();
+    return s[e - 1];
+}
+
+template <typename T>
+bool Stack<T>::isEmpty() const {
+    return e == 0;
+}
+
+template <typename T>
+bool Stack<T>::operator< (const Stack<T>& r) const {
+    return ToVector() < r.ToVector();
+}
+template <typename T>
+bool Stack<T>::operator>= (const Stack<T>& r) const {
+    return !operator<(r);
+}
+template <typename T>
+bool Stack<T>::operator> (const Stack<T>& r) const {
+    return ToVector() > r.ToVector();
+}
+template <typename T>
+bool Stack<T>::operator<= (const Stack<T>& r) const {
+    return !operator>(r);
+}
+template <typename T>
+bool Stack<T>::operator== (const Stack<T>& r) const {
+    return ToVector() == r.ToVector();
+}
+template <typename T>
+bool Stack<T>::operator!= (const Stack<T>& r) const {
+    return !operator==(r);
+}
+
+template <typename T>
+Stack<T>::~Stack() {
+    delete[] s;
+}
+
